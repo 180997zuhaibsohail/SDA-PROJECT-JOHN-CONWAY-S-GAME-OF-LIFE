@@ -6,6 +6,7 @@
 package database;
 
 import java.sql.*;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,6 +118,20 @@ public int[] load(int[]states,int stateCoordinateX,int stateCoordinateY)throws S
       for(int i=0;i<size;i++)
       {
        System.out.print(states[i]);
+      }
+      Scanner fs=new Scanner(System.in);
+      System.out.print("Enter x");
+      String x=fs.nextLine();
+      System.out.print("Enter y");
+      String y=fs.nextLine();
+      
+      int x1=Integer.parseInt(x);
+      int y1=Integer.parseInt(y);
+      int[]Lstates=new int[2];
+      Lstates=b.load(states, x1, y1);
+      for(int i=0;i<2;i++)
+      {
+       System.out.print(Lstates[i]);
       }
     }
     
