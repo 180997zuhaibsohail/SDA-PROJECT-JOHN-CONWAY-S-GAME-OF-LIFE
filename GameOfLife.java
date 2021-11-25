@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.Image;
 import java.awt.Graphics;
-import javax.swing.SwingUtilities;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -31,46 +31,9 @@ public class GameOfLife extends javax.swing.JFrame {
         initComponents();
         offScrImg = createImage(jPanel1.getWidth(), jPanel1.getHeight());
         offScrGraph =offScrImg.getGraphics();
-        Timer time = new Timer();
-        TimerTask task = new TimerTask(){
-            public void run(){
-                if(play){
-                    for(int i =0 ;i < hei ; i++){
-                        for(int j =0 ;j < wid ; j++){
-                            nextMove[i][j] = decide(i,j);
-                        }
-                    }
-                    for(int i =0 ;i < hei ; i++){
-                        for(int j =0 ;j < wid ; j++){
-                            currentMove[i][j] = nextMove[i][j];
-                        }
-                    }
-                    repain();
-                }
-            }
-        };
-        time.scheduleAtFixedRate(task, 0, 100);
         repain();
     }
-    
-    private boolean decide(int i, int j){
-        int neighbors = 0;
-        if(j > 0){
-            if(currentMove[i][j-1]) neighbors++;
-            if(i>0) if(currentMove[i-1][j-1]) neighbors++;
-            if(i<hei-1) if(currentMove[i+1][j-1]) neighbors++;
-        }
-        if(j < wid-1){
-            if(currentMove[i][j+1]) neighbors++;
-            if(i>0) if(currentMove[i-1][j+1]) neighbors++;
-            if(i<hei-1) if(currentMove[i+1][j+1]) neighbors++;
-        }
-        if(i>0) if(currentMove[i-1][j]) neighbors++;
-        if(i<hei-1) if(currentMove[i+1][j]) neighbors++;
-        if(neighbors == 3) return true;
-        if(currentMove[i][j] && neighbors==2) return true;
-        return false;
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,14 +43,14 @@ public class GameOfLife extends javax.swing.JFrame {
         offScrGraph.setColor(jPanel1.getBackground());
         offScrGraph.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         for(int i = 0 ; i < hei ; i++){
-            for(int j = 0 ; j < wid ; j++){
+            for(int j = 0 ; j < hei ; j++){
                 if(currentMove[i][j]){
                     offScrGraph.setColor(Color.YELLOW);
                     int x = j * jPanel1.getWidth() / wid;
                     int y = i * jPanel1.getHeight() / hei;
                     offScrGraph.fillRect(x, y, jPanel1.getWidth()/wid, jPanel1.getHeight()/hei);
                 }
-            }    
+        }    
         }
         offScrGraph.setColor(Color.BLACK);
         for(int i = 1; i < hei; i++){
@@ -112,11 +75,6 @@ public class GameOfLife extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
-        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jPanel1MouseDragged(evt);
-            }
-        });
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel1MouseClicked(evt);
@@ -140,11 +98,6 @@ public class GameOfLife extends javax.swing.JFrame {
         );
 
         jButton1.setText("Play");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         jButton2.setText("Reset");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -162,8 +115,8 @@ public class GameOfLife extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 533, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 539, Short.MAX_VALUE)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -183,13 +136,12 @@ public class GameOfLife extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        currentMove = new boolean[hei][wid];
-        repain();
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        int j = wid * evt.getX() / jPanel1.getWidth();
-        int i = hei * evt.getY() / jPanel1.getHeight();
+        int j = evt.getX() / jPanel1.getWidth() * wid;
+        int i = evt.getY() / jPanel1.getHeight() * hei;
         currentMove[i][j] = !currentMove[i][j];
         repain();
     }//GEN-LAST:event_jPanel1MouseClicked
@@ -199,26 +151,6 @@ public class GameOfLife extends javax.swing.JFrame {
         offScrGraph =offScrImg.getGraphics();
         repain();
     }//GEN-LAST:event_jPanel1ComponentResized
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        play = !play;
-        if(play){
-            jButton1.setText("Pause");
-        }
-        else{
-            jButton1.setText("Play");
-        }
-        repain();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-        int j = wid * evt.getX();
-        int i = hei * evt.getY();
-        if(SwingUtilities.isLeftMouseButton(evt)){
-            currentMove[i][j] = true;
-        }else currentMove[i][j] = false;
-        repain();
-    }//GEN-LAST:event_jPanel1MouseDragged
 
     /**
      * @param args the command line arguments
