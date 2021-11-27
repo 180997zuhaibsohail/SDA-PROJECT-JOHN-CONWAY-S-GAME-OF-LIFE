@@ -1,15 +1,20 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package database;
 
 import java.sql.*;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Usman
+ * @author Faisal
  */
-public class DataBase implements DataBaseI
-{
+public class DataBase implements DataBaseI{
 
     private ResultSet rs;
    public void establish_Connection() throws SQLException
@@ -21,7 +26,7 @@ public class DataBase implements DataBaseI
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
             
-            String Url="jdbc:ucanaccess://C:\\Users\\Software Design Analysis\\Project\\savedgame.accdb";
+            String Url="jdbc:ucanaccess://C:\\Users\\Faisal\\Desktop\\7th Semester\\Software Design Analysis\\Project\\savegame.accdb";
             Connection con=DriverManager.getConnection(Url);
             String sql="Select * from saveStates";
             PreparedStatement pst;
@@ -30,34 +35,27 @@ public class DataBase implements DataBaseI
             rs=pst.executeQuery();
         
 }
-public void saveStates(int x,int y) throws SQLException
-{            String temp1=Integer.toString(x);
-             String temp2=Integer.toString(y);
+public void saveStates(String name,String x,String y) throws SQLException
+{            
              rs.moveToInsertRow();
-             rs.updateString("x", temp1);
-             rs.updateString("y", temp2);
+             rs.updateString("StateName", name);
+             rs.updateString("X_Coordinates", x);
+             rs.updateString("Y_Coordinates", y);
              rs.insertRow();
 }
-public void deleteSaveStates(int x,int y) throws SQLException
-{            String temp1=Integer.toString(x);
-             String temp2=Integer.toString(y);
+public void deleteSaveStates(String name) throws SQLException
+{            
              rs.beforeFirst();
              while(rs.next())
              {
-                 if(temp1.equals(rs.getString("x")) && temp2.equals(rs.getString("y")))
+                 if(name.equals(rs.getString("StateName")))
                  {
                      rs.deleteRow();
                      break;
                  }
              }
 }
-public void viewSavedStates() throws SQLException
-{   System.out.print("X Y"+"\n");
-             while(rs.next())
-             {
-                 System.out.print(rs.getString("x")+" "+rs.getString("y")+"\n");
-             }
-}
+
 public int count()throws SQLException
 {
     int counter=0;
@@ -65,33 +63,74 @@ public int count()throws SQLException
     {
         counter++;
     }
-    return 2*counter; //bcz 2 cordinates make 1 cell
+    return counter;
 }
-public int[] load(int count)throws SQLException
-{
-    int i=0;
-    int[]states=new int[count];
+
+public String[] viewSavedStates(int count) throws SQLException
+{   int i=0;
+    String[]states=new String[count];
     rs.beforeFirst();
     while(rs.next())
     {
-        states[i]=Integer.parseInt(rs.getString("x"));
-        i++;
-        states[i]=Integer.parseInt(rs.getString("y"));
-        i++;
+        states[i]=rs.getString("StateName");
     }
     return states;
 }
-    public static void main(String[] args) throws SQLException 
-	{
+
+public String[] load(String name)throws SQLException
+{
+    int i=0;
+    String[] chosen=new String[2];
+    rs.beforeFirst();
+    while(rs.next())
+    {
+        
+        if(name.equals(rs.getString("StateName")))
+        {
+            chosen[0]=rs.getString("X_Coordinates");
+            chosen[1]=rs.getString("X_Coordinates");
+            break;
+        }
+        i++;
+    }
+    return chosen;
+}
+    public static void main(String[] args) throws SQLException {
+        // TODO code application logic here
         DataBase b=new DataBase();
+       
+      //  b.deleteSaveStates(0, 0);
+      String x="1,2,3,4";
+      String y="2,3,3,4";
+      String name="State1";
+     // for(int i=0;i<5;i++)
+     // {
         b.establish_Connection();
- 
-      int size=b.count();
+        b.saveStates(name,x,y);
+      // b.deleteSaveStates(name);
+     // }
+      //  b.viewSavedStates();
+     /* int size=b.count();
       int[]states=new int[size];
-      states=b.load(size);
+      states=b.viewSavedStates(size);
       for(int i=0;i<size;i++)
       {
        System.out.print(states[i]);
-      } 
+      }
+      Scanner fs=new Scanner(System.in);
+      System.out.print("Enter x");
+      String x=fs.nextLine();
+      System.out.print("Enter y");
+      String y=fs.nextLine();
+      
+      int x1=Integer.parseInt(x);
+      int y1=Integer.parseInt(y);
+      int[]Lstates=new int[2];
+      Lstates=b.load(states, x1, y1);
+      for(int i=0;i<2;i++)
+      {
+       System.out.print(Lstates[i]);
+      }
+*/
     }
 }
